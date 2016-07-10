@@ -1,4 +1,7 @@
-# MS-challenge-2016
+#Random Forest for Multiple Sclerosis Lesion Segmentation for MS-challenge-2016
+
+Author: Francisco Javier Vera Olmos
+mail:javier.vera@urjc.es
 
 This project is based on Python 2.7 and Matlab Compiler Runtime to use SPM toolbox. 
 
