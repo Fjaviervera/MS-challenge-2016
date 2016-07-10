@@ -1,8 +1,8 @@
 # MS-challenge-2016
 
-This project is based in Python 2.7 and Matlab Compiler runtime to use SPM toolbox. 
+This project is based on Python 2.7 and Matlab Compiler Runtime to use SPM toolbox. 
 
-To use this software you need the followings phyton package.
+To use this software you need the followings python package.
 
 MedPy
 NumPy
