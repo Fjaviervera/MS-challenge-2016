@@ -90,9 +90,9 @@ python ms_run.py 3DT1.nii.gz 3DFLAIR.nii.gz T1_preprocessed.nii.gz FLAIR_preproc
 Multiple Sclerosis (MS) is a chronic, inflammatory and demyelinating disease that primarily affects the white matter of the central nervous system. Automatic segmentation of MS lesions in brain MRI has been widely investigated in recent years with the goal of helping MS diagnosis and patient follow-up. It offers an attractive alternative to manual segmentation, which remains a time-consuming task and suffers from intra- and inter-expert variability. We propose a new approach that uses a Random Forest (RF) classifier. Its input has been filtered with a threshold based on the gray matter (GM) distribution and uses several features that take into account voxel and context information. A Markov Random Field (MRF) post processing algorithm has been applied to make lesions grow through probable neighborhoods. Our approach will be used in the MS challenge 2016, that will take place in October during MICCAI 2016. Therefore, in order to train and test the method we use the database provided from the challenge, which consists in 15 subject from 4 different centers, imaged on 1.5T or 3T scanners.The provided MR sequences include: 3D FLAIR, 3D T1-w, 3D T1-w GADO, 2D DP and 2D T2. In this data set each patient has being manually annotated by seven experts. We found that segmentation results are maximized by using all available sequences, but the FLAIR volume provides most of the information. Thus our method can work only with the T1-w volume to segment the tissues and the FLAIR volume to extract the most important features, still, its performance improves slightly if more types of sequences are available.
 
 
+#FAQ
 
-
-
+In the future I will add support for just raw images and implement the skull stripping and the bias correction, but FSL wich is the most used in skull stripping is only native for linux and I want to keep this project in mostly python code and for all plataforms, so it's going to take time. 
 
 
 
