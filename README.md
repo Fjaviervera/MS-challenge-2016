@@ -2,6 +2,9 @@
 
 This project is based on Python 2.7 and Matlab Compiler Runtime to use SPM toolbox. 
 
+This paper explain how this software works:
+https://www.overleaf.com/read/jjkhxzszpdhv
+
 To use this software you need the followings python package.
 
 MedPy
