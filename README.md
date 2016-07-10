@@ -31,7 +31,7 @@ To execute the program you need to parse the path of your SPM standalone isntall
 Also you need the classifiers wich are larges files, they are avalibles in this link:
 https://1drv.ms/u/s!AtQHOnUHXE11g4Bds-Rzvqe0kKqs4w
 
-Once Downloaded move it to the root of the project and uncompress it. You should have in the root a folders named classifiers.
+Once Downloaded move it to the root of the project and uncompress it(take in count it will take 10 Gb of space more or less). You should have in the root a folders named classifiers.
 
 The inputs are the followings:
 
