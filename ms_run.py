@@ -160,7 +160,9 @@ subject.add_ms_classifier(class_ms_path)
 
 
 subject=lsf.test_ms(subject,n_estim=200, depth=None,flag=2)
-
-subject=lsf.lesion_growing(subject,theta=0.25,beta_grow=2,flag=1)
+if mode == 'basic':
+    subject=lsf.lesion_growing(subject,theta=0.25,beta_grow=2,flag=1)
+else:
+    subject = lsf.lesion_growing(subject, theta=0.15, beta_grow=2, flag=1)
 
 print 'Job done  '
