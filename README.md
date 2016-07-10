@@ -26,24 +26,23 @@ To execute the program you need to parse the path of your SPM standalone isntall
 The inputs are the followings:
 
 positional arguments:
-  t1_raw                path of the T1-w volume
-  flair_raw             path of the FLAIR volume
-  t1_pp                 path of the T1-w volume
-  flair_pp              path of the FLAIR volume
-  spm_path              path to spm.sh if linux or spm.exe if windows
-  output_folder         path where outputs and intermediate files will be
-                        stored
+  t1_raw--->  path of the T1-w volume
+  flair_raw --->  path of the FLAIR volume
+  t1_pp ---> path of the T1-w volume
+  flair_pp ---> path of the FLAIR volume
+  spm_path ---> path to spm.sh if linux or spm.exe if windows
+  output_folder ---> path where outputs and intermediate files will be stored
 
 optional arguments:
-  -h, --help             show this help message and exit
-  -mcr_path MCR_PATH     matlab compiler runtime path
-  -t2_raw T2_RAW         path of the T2-w volume
-  -dp_raw DP_RAW         path of the DP volume
-  -gado_raw GADO_RAW     path of the T1-Gado volume
-  -t2_pp T2_PP           path of the T2-w volume
-  -dp_pp DP_PP           path of the DP volume
-  -gado_pp GADO_PP       path of the T1-Gado volume
-  -brain_mask BRAIN_MASK path of the brain-mask volume
+  -h, --help  --->  show this help message and exit
+  -mcr_path MCR_PATH  --->  matlab compiler runtime path
+  -t2_raw T2_RAW  --->  path of the T2-w volume
+  -dp_raw DP_RAW  --->    path of the DP volume
+  -gado_raw GADO_RAW --->   path of the T1-Gado volume
+  -t2_pp T2_PP --->  path of the T2-w volume
+  -dp_pp DP_PP  ---> path of the DP volume
+  -gado_pp GADO_PP  ---> path of the T1-Gado volume
+  -brain_mask BRAIN_MASK  ---> path of the brain-mask volume
 
 
 For now two modes are implemented :
