@@ -121,7 +121,7 @@ if args.t1_pp[-3::] == '.gz':
 
 with open(join(subject.intermediate_path,"gen_batch.m"), "w") as f1:
     f1.write(' path_t1=\'' + subject.T1_gunzip_path+'\' ; \n ')
-    f1.write('path_tpm=\''+join(os.path.dirname(os.path.realpath(__file__)) ,'TPM.nii')+'\' ; \n')
+    f1.write('path_tpm=\''+join(args.spm_path ,'spm12_mcr/spm12/tpm/TPM.nii')+'\' ; \n')
     with open(join(os.path.dirname(os.path.realpath(__file__)) ,"tissueseg_creator.m")) as f:
 
             for line in f:
@@ -129,12 +129,12 @@ with open(join(subject.intermediate_path,"gen_batch.m"), "w") as f1:
 
 if platform.system() =='Windows':
 
-    os.system(args.spm_path + ' batch '+ join(subject.intermediate_path,"gen_batch.m" ))
+    os.system(join(args.spm_path,'spm12_win64.exe')+ ' batch '+ join(subject.intermediate_path,"gen_batch.m" ))
 
 else:
     if args.mcr_path ==None:
         print ' Matlab runtime compiler path is needed to run in Linux/MacOS systems'
-    os.system(args.spm_path +' '+ args.mcr_path + ' batch ' + join(subject.intermediate_path, "gen_batch.m"))
+    os.system(join(args.spm_path,'run_spm12.sh ')+ args.mcr_path + ' batch ' + join(subject.intermediate_path, "gen_batch.m"))
 
 
 
@@ -161,8 +161,8 @@ subject.add_ms_classifier(class_ms_path)
 
 subject=lsf.test_ms(subject,n_estim=200, depth=None,flag=2)
 if mode == 'basic':
-    subject=lsf.lesion_growing(subject,theta=0.15,beta_grow=2,flag=1)
+    subject=lsf.lesion_growing(subject,theta=0.25,beta_grow=2,flag=1)
 else:
-    subject = lsf.lesion_growing(subject, theta=0.25, beta_grow=2, flag=1)
+    subject = lsf.lesion_growing(subject, theta=0.15, beta_grow=2, flag=1)
 
 print 'Job done  '
