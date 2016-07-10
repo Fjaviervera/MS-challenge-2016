@@ -70,7 +70,7 @@ For now two modes are implemented :
 
 2- Using T1, T2, FLAIR, Proton Density (DP) and Gadoline T1 (GADO)
 
-It is mandatory to provide the paths of the raw images and the preprocessed volumes of every sequence.
+It is mandatory to provide the paths of the raw images and the preprocessed volumes(skull stripped and bias corrected) of every sequence.
 
 
 The outputs generated are stored in two folders: "intermediates" and "results".
