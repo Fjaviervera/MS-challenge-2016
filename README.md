@@ -1,5 +1,7 @@
 #Random Forest for Multiple Sclerosis Lesion Segmentation - MS-challenge-2016
 
+Version 1.0.0
+
 Author: Francisco Javier Vera Olmos
 mail:javier.vera@urjc.es
 
