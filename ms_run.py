@@ -129,12 +129,12 @@ with open(join(subject.intermediate_path,"gen_batch.m"), "w") as f1:
 
 if platform.system() =='Windows':
 
-    os.system(join(args.spm_path,'spm12_win64.exe')+ ' batch '+ join(subject.intermediate_path,"gen_batch.m" ))
+    os.system(join(args.spm_path)+ ' batch '+ join(subject.intermediate_path,"gen_batch.m" ))
 
 else:
     if args.mcr_path ==None:
         print ' Matlab runtime compiler path is needed to run in Linux/MacOS systems'
-    os.system(args.spm_path + args.mcr_path + ' batch ' + join(subject.intermediate_path, "gen_batch.m"))
+    os.system(args.spm_path +' '+ args.mcr_path + ' batch ' + join(subject.intermediate_path, "gen_batch.m"))
 
 
 
