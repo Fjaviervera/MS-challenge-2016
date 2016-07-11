@@ -10,7 +10,7 @@ This project is based on Python 2.7 and Matlab Compiler Runtime to use SPM toolb
 This paper explain how this software works:
 https://www.overleaf.com/read/jjkhxzszpdhv
 
-To use this software you need the followings python package:
+To use this software you need the followings python packages:
 
 MedPy
 
@@ -22,18 +22,18 @@ SciPy
 
 matplotlib
 
-XlsxWriter
+XlsxWriter(optional)
 
-The easiest way to install them is using Conda, wich install most of the package, and then use pip to install MedPy, scikit-learn and XlsxWriter.
+The easiest way to install them is using Conda, wich install most of the package, and then use pip to install MedPy, scikit-learn and XlsxWriter(optional).
 
 Also it is mandatory needed to have installed the Matlab Compiler Runtime(MCR) and a SPM standalone installation compatible with that MCR.
 
-To execute the program you need to parse the path of your SPM standalone isntallation and( only if you use a Linux or a MacOS systems) you have to parse the path to your MCR.
+To execute the program you need to parse the path of your SPM standalone isntallation and (only if you use a Linux or a MacOS systems) you have to parse the path to your MCR.
 
-Also you need the classifiers wich are larges files, they are avalibles in this link:
+Also you need the classifiers ,which are larges files, they are avalibles in this link:
 https://1drv.ms/u/s!AtQHOnUHXE11g4Bds-Rzvqe0kKqs4w
 
-Once Downloaded move it to the root of the project and uncompress it(take in count it will take 10 Gb of space more or less). You should have in the root a folders named classifiers.
+Once downloaded, move it to the root of the project and uncompress it(take in count it will take 10 Gb of space more or less). You should have in the root of the project a folder named classifiers.
 
 The inputs are the followings:
 
@@ -117,7 +117,7 @@ File gen_batch.m --> batch generated to run in SPM.
 
 
 
-In "results" you have the final lesion MS mask generated.
+In "results" folder you will have the final lesion mask generated.
 
 
 Example of usage:
@@ -132,7 +132,9 @@ Multiple Sclerosis (MS) is a chronic, inflammatory and demyelinating disease tha
 
 #FAQ
 
-In the future I will add support for just raw images and implement the skull stripping and the bias correction, but FSL wich is the most used in skull stripping is only native for linux and I want to keep this project in mostly python code and for all plataforms, so it's going to take time. 
+In the future I will add support for just raw images and implement the skull stripping and the bias correction, but FSL which is the most used in skull stripping is only native for linux and I want to keep this project in mostly python code and for all plataforms, so it's going to take time. 
+
+
 
 
 
