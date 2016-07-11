@@ -848,7 +848,7 @@ def create_features_ms(subject,flag):
     for vol_path in subject.return_irs_sequences():
 
 
-        print 'Generating tissue and distance features---< ' +  '  ' + vol_path
+        print 'Generating MS features---< ' +  '  ' + vol_path
 
         image_data, image_header = load(vol_path)
 
