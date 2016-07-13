@@ -112,16 +112,41 @@ subject.add_intermediate(join(subject.dir, 'intermediate'))
 subject.add_pp_sequences( types_sequences,pp_list)
 
 if args.brain_mask == None:
+
+    if args.t1_pp == None:
+        subject = lsf.gunzip_T1_unpp(subject)
+    
+        if args.t1_raw[-3::] == '.gz':
+            subject = lsf.gunzip_T1_unpp(subject)
+
+
+        with open(join(subject.intermediate_path, "skull_batch.m"), "w") as f1:
+            f1.write(' path_t1=\'' + subject.T1_gunzip_path + '\' ; \n ')
+            f1.write('path_tpm=\'' + join(os.path.dirname(os.path.realpath(__file__)), 'TPM.nii') + '\' ; \n')
+            with open(join(os.path.dirname(os.path.realpath(__file__)), "skullseg_creator.m")) as f:
+                for line in f:
+                    f1.write(line)
+
+        if platform.system() == 'Windows':
+
+            os.system(join(args.spm_path) + ' batch ' + join(subject.intermediate_path, "skull_batch.m"))
+
+        else:
+            if args.mcr_path == None:
+                print ' Matlab runtime compiler path is needed to run in Linux/MacOS systems'
+            os.system(args.spm_path + ' ' + args.mcr_path + ' batch ' + join(subject.intermediate_path, "skull_batch.m"))
+
     lsf.create_brain_mask(subject)
+
 else:
     subject.add_brain_mask(args.brain_mask)
 
 if args.t1_pp[-3::] == '.gz':
-    subject=lsf.gunzip_T1(subject)
+    subject=lsf.gunzip_T1_pp(subject)
 
-with open(join(subject.intermediate_path,"gen_batch.m"), "w") as f1:
-    f1.write(' path_t1=\'' + subject.T1_gunzip_path+'\' ; \n ')
-    f1.write('path_tpm=\''+join(os.path.dirname(args.spm_path ),'spm12_mcr/spm12/tpm/TPM.nii')+'\' ; \n')
+with open(join(subject.intermediate_path,"tissue_batch.m"), "w") as f1:
+    f1.write(' path_t1=\'' + subject.T1_pp_gunzip_path+'\' ; \n ')
+    f1.write('path_tpm=\'' + join(os.path.dirname(os.path.realpath(__file__)), 'TPM.nii')+'\' ; \n')
     with open(join(os.path.dirname(os.path.realpath(__file__)) ,"tissueseg_creator.m")) as f:
 
             for line in f:
@@ -129,16 +154,16 @@ with open(join(subject.intermediate_path,"gen_batch.m"), "w") as f1:
 
 if platform.system() =='Windows':
 
-    os.system(join(args.spm_path)+ ' batch '+ join(subject.intermediate_path,"gen_batch.m" ))
+    os.system(join(args.spm_path)+ ' batch '+ join(subject.intermediate_path,"tissue_batch.m" ))
 
 else:
     if args.mcr_path ==None:
         print ' Matlab runtime compiler path is needed to run in Linux/MacOS systems'
-    os.system(args.spm_path +' '+ args.mcr_path + ' batch ' + join(subject.intermediate_path, "gen_batch.m"))
+    os.system(args.spm_path +' '+ args.mcr_path + ' batch ' + join(subject.intermediate_path, "tissue_batch.m"))
 
 
 
-subject.add_tissue_segmentation( join(subject.intermediate_path,'c1T1.nii'),join(subject.intermediate_path,'c2T1.nii'),join(subject.intermediate_path,'c3T1.nii'))
+subject.add_tissue_segmentation( join(subject.intermediate_path,'c1T1_pp.nii'),join(subject.intermediate_path,'c2T1_pp.nii'),join(subject.intermediate_path,'c3T1_pp.nii'))
 
 
 subject=lsf.intensity_correction(subject)
@@ -146,7 +171,7 @@ subject=lsf.intensity_correction(subject)
 subject=lsf.create_features_csfext(subject,2)
 
 
-class_ext_csf_path= join(os.path.dirname(os.path.realpath(__file__)), 'classifiers/classifiers_server_csfext/classifier_200_None_'+mode+'/clasifier_csf_ext_200_None.pkl')
+class_ext_csf_path= join(os.path.dirname(os.path.realpath(__file__)), 'classifiers\classifiers_server_csfext\classifier_200_None_'+mode+'\clasifier_csf_ext_200_None.pkl')
 subject.add_ext_csf_classifier(class_ext_csf_path)
 
 
@@ -155,14 +180,14 @@ subject=lsf.test_csfext(subject,n_estim=200, depth=None,flag=2)
 
 subject=lsf.create_features_ms(subject,2)
 
-class_ms_path= join(os.path.dirname(os.path.realpath(__file__)), 'classifiers/classifiers_server_ms/classifier_200_None_'+mode+'/clasifier_ms_200_None.pkl')
+class_ms_path= join(os.path.dirname(os.path.realpath(__file__)), 'classifiers\classifiers_server_ms\classifier_200_None_'+mode+'\clasifier_ms_200_None.pkl')
 subject.add_ms_classifier(class_ms_path)
 
 
 subject=lsf.test_ms(subject,n_estim=200, depth=None,flag=2)
 if mode == 'basic':
-    subject=lsf.lesion_growing(subject,theta=0.25,beta_grow=2,flag=1)
+    subject=lsf.lesion_growing(subject,theta=0.15,beta_grow=2,flag=1)
 else:
-    subject = lsf.lesion_growing(subject, theta=0.15, beta_grow=2, flag=1)
+    subject = lsf.lesion_growing(subject, theta=0.25, beta_grow=2, flag=1)
 
 print 'Job done  '
