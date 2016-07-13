@@ -173,11 +173,22 @@ def create_subject(flags_sequences,path_sequences,subject_name,subject_path):
     return subject
 
 def create_brain_mask(subject):
+    if subject.T1_pp == 1:
+        vol, header = load(subject.T1_pp_path)
+        mask_brain = vol > 0
+        save(mask_brain, join(subject.intermediate_path, 'brain_mask.nii.gz'), header)
 
-    vol, header = load(subject.T1_pp_path)
-    mask_brain = vol > 0
-    save(mask_brain, join(subject.intermediate_path,'brain_mask.nii.gz'), header)
+    else:
+        c1, headerc1 = load(join(subject.intermediate_path,'c1T1.nii'))
+        c2, headerc2 = load(join(subject.intermediate_path, 'c2T1.nii'))
+        c3, headerc3 = load(join(subject.intermediate_path, 'c3T1.nii'))
+        c4, headerc4 = load(join(subject.intermediate_path, 'c4T1.nii'))
+        c5, headerc5 = load(join(subject.intermediate_path, 'c5T1.nii'))
+        t1,t1_header = load(subject.T1_path)
 
+
+        mask_brain = ((c1+c2+c3) > 0.95) * (c4 + c5 < 0.1 )
+        save(mask_brain, join(subject.intermediate_path,'brain_mask.nii.gz'), t1_header)
     subject.add_brain_mask(join(subject.intermediate_path, 'brain_mask.nii.gz'))
     return subject
 
@@ -848,7 +859,7 @@ def create_features_ms(subject,flag):
     for vol_path in subject.return_irs_sequences():
 
 
-        print 'Generating MS features---< ' +  '  ' + vol_path
+        print 'Generating tissue and distance features---< ' +  '  ' + vol_path
 
         image_data, image_header = load(vol_path)
 
@@ -1418,11 +1429,20 @@ def calc_result(subject_list, xls_name):
     worksheet.write_formula(row, col+5,'=AVERAGE(I$5:I$19)')
     workbook.close()
 
-def gunzip_T1(subject):
+def gunzip_T1_pp(subject):
 
     vol, header = load(subject.T1_pp_path)
-    save(vol, join(subject.intermediate_path,'T1.nii'), header)
-    subject.T1_gunzip = 1
-    subject.T1_gunzip_path=join(subject.intermediate_path, 'T1.nii')
+    save(vol, join(subject.intermediate_path,'T1_pp.nii'), header)
+    subject.T1_pp_gunzip = 1
+    subject.T1_pp_gunzip_path=join(subject.intermediate_path, 'T1_pp.nii')
     return subject
 
+
+def gunzip_T1_unpp(subject):
+
+
+    vol, header = load(subject.T1_path)
+    save(vol, join(subject.intermediate_path, 'T1.nii'), header)
+    subject.T1_gunzip = 1
+    subject.T1_gunzip_path = join(subject.intermediate_path, 'T1.nii')
+    return subject
