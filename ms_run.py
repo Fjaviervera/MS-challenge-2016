@@ -123,7 +123,7 @@ if args.brain_mask == None:
 
         with open(join(subject.intermediate_path, "skull_batch.m"), "w") as f1:
             f1.write(' path_t1=\'' + subject.T1_gunzip_path + '\' ; \n ')
-            f1.write('path_tpm=\'' + join(os.path.dirname(os.path.realpath(__file__)), 'TPM.nii') + '\' ; \n')
+            f1.write('path_tpm=\'' + join(os.path.dirname(args.spm_path ),'spm12_mcr/spm12/tpm/TPM.nii') + '\' ; \n')
             with open(join(os.path.dirname(os.path.realpath(__file__)), "skullseg_creator.m")) as f:
                 for line in f:
                     f1.write(line)
@@ -147,7 +147,7 @@ if args.t1_pp[-3::] == '.gz':
 
 with open(join(subject.intermediate_path,"tissue_batch.m"), "w") as f1:
     f1.write(' path_t1=\'' + subject.T1_pp_gunzip_path+'\' ; \n ')
-    f1.write('path_tpm=\'' + join(os.path.dirname(os.path.realpath(__file__)), 'TPM.nii')+'\' ; \n')
+    f1.write('path_tpm=\'' + join(os.path.dirname(args.spm_path ),'spm12_mcr/spm12/tpm/TPM.nii')+'\' ; \n')
     with open(join(os.path.dirname(os.path.realpath(__file__)) ,"tissueseg_creator.m")) as f:
 
             for line in f:
