@@ -12,8 +12,9 @@ parser.add_argument("flair_raw", help="path of the FLAIR volume")
 parser.add_argument("t1_pp", help="path of the T1-w volume")
 parser.add_argument("flair_pp", help="path of the FLAIR volume")
 parser.add_argument("spm_path",help="path to spm.sh if linux or spm.exe if windows")
-parser.add_argument("-mcr_path", help="matlab compiler runtime path ")
+parser.add_argument("brain_mask", help="path of the brain-mask volume")
 parser.add_argument("output_folder", help="path where outputs and intermediate files will be stored")
+parser.add_argument("-mcr_path", help="matlab compiler runtime path ")
 parser.add_argument("-t2_raw", help="path of the T2-w volume")
 parser.add_argument("-dp_raw", help="path of the DP volume")
 parser.add_argument("-gado_raw", help="path of the T1-Gado volume")
@@ -21,7 +22,7 @@ parser.add_argument("-t2_pp", help="path of the T2-w volume")
 parser.add_argument("-dp_pp", help="path of the DP volume")
 parser.add_argument("-gado_pp", help="path of the T1-Gado volume")
 
-parser.add_argument("-brain_mask", help="path of the brain-mask volume")
+
 
 
 
@@ -115,7 +116,7 @@ if args.brain_mask == None:
 
     if args.t1_pp == None:
         subject = lsf.gunzip_T1_unpp(subject)
-    
+
         if args.t1_raw[-3::] == '.gz':
             subject = lsf.gunzip_T1_unpp(subject)
 
