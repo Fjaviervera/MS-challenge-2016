@@ -172,7 +172,7 @@ subject=lsf.intensity_correction(subject)
 subject=lsf.create_features_csfext(subject,2)
 
 
-class_ext_csf_path= join(os.path.dirname(os.path.realpath(__file__)), 'classifiers\classifiers_server_csfext\classifier_200_None_'+mode+'\clasifier_csf_ext_200_None.pkl')
+class_ext_csf_path= join(os.path.dirname(os.path.realpath(__file__)), 'classifiers','classifiers_server_csfext','classifier_200_None_'+mode,'clasifier_csf_ext_200_None.pkl')
 subject.add_ext_csf_classifier(class_ext_csf_path)
 
 
@@ -181,7 +181,7 @@ subject=lsf.test_csfext(subject,n_estim=200, depth=None,flag=2)
 
 subject=lsf.create_features_ms(subject,2)
 
-class_ms_path= join(os.path.dirname(os.path.realpath(__file__)), 'classifiers\classifiers_server_ms\classifier_200_None_'+mode+'\clasifier_ms_200_None.pkl')
+class_ms_path= join(os.path.dirname(os.path.realpath(__file__)), 'classifiers','classifiers_server_ms','classifier_200_None_'+mode,'clasifier_ms_ext_200_None.pkl')
 subject.add_ms_classifier(class_ms_path)
 
 
