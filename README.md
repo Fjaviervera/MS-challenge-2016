@@ -46,6 +46,8 @@ positional arguments:
   
   flair_pp ---> path of the FLAIR volume
   
+  brain_mask BRAIN_MASK  ---> path of the brain-mask volume
+  
   spm_path ---> path to spm.sh if linux or spm.exe if windows
   
   output_folder ---> path where outputs and intermediate files will be stored
@@ -68,7 +70,7 @@ optional arguments:
   
   -gado_pp GADO_PP  ---> path of the T1-Gado volume
   
-  -brain_mask BRAIN_MASK  ---> path of the brain-mask volume
+  
 
 
 For now two modes are implemented :
