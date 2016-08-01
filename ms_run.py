@@ -181,7 +181,7 @@ subject=lsf.test_csfext(subject,n_estim=200, depth=None,flag=2)
 
 subject=lsf.create_features_ms(subject,2)
 
-class_ms_path= join(os.path.dirname(os.path.realpath(__file__)), 'classifiers','classifiers_server_ms','classifier_200_None_'+mode,'clasifier_ms_ext_200_None.pkl')
+class_ms_path= join(os.path.dirname(os.path.realpath(__file__)), 'classifiers','classifiers_server_ms','classifier_200_None_'+mode,'clasifier_ms_200_None.pkl')
 subject.add_ms_classifier(class_ms_path)
 
 
