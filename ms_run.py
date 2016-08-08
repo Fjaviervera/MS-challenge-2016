@@ -2,8 +2,9 @@ import argparse
 import lesions_seg_functions as lsf
 import os
 from os import listdir,makedirs
-from os.path import isfile, join, isdir,exists
+from os.path import isfile, join, isdir,exists,splitext
 import time
+import shutil
 import platform
 parser = argparse.ArgumentParser(description='Laimbio MS Challenge 2016 Method ')
 
@@ -145,6 +146,28 @@ else:
 if args.t1_pp[-3::] == '.gz':
     subject=lsf.gunzip_T1_pp(subject)
 
+
+
+shutil.copy(subject.T1_pp_gunzip_path,splitext(subject.T1_pp_gunzip_path)[0]+'_copia.nii')
+subject.T1_pp_gunzip_path_copy = splitext(subject.T1_pp_gunzip_path)[0]+'_copia.nii'
+
+with open(join(subject.intermediate_path, "coreg_batch.m"), "w") as f1:
+    f1.write('ref=\'' + join(os.path.dirname(args.spm_path), 'spm12_mcr/spm12/canonical/avg305T1.nii') + '\' ; \n')
+    f1.write('source=\'' + subject.T1_pp_gunzip_path + '\' ; \n ')
+    with open(join(os.path.dirname(os.path.realpath(__file__)), "coreg.m")) as f:
+        for line in f:
+            f1.write(line)
+
+if platform.system() == 'Windows':
+
+    os.system(join(args.spm_path) + ' batch ' + join(subject.intermediate_path, "coreg_batch.m"))
+
+else:
+    if args.mcr_path == None:
+        print ' Matlab runtime compiler path is needed to run in Linux/MacOS systems'
+    os.system(args.spm_path + ' ' + args.mcr_path + ' batch ' + join(subject.intermediate_path, "coreg_batch.m"))
+
+
 with open(join(subject.intermediate_path,"tissue_batch.m"), "w") as f1:
     f1.write(' path_t1=\'' + subject.T1_pp_gunzip_path+'\' ; \n ')
     f1.write('path_tpm=\'' + join(os.path.dirname(args.spm_path ),'spm12_mcr/spm12/tpm/TPM.nii')+'\' ; \n')
@@ -163,8 +186,27 @@ else:
     os.system(args.spm_path +' '+ args.mcr_path + ' batch ' + join(subject.intermediate_path, "tissue_batch.m"))
 
 
-
 subject.add_tissue_segmentation( join(subject.intermediate_path,'c1T1_pp.nii'),join(subject.intermediate_path,'c2T1_pp.nii'),join(subject.intermediate_path,'c3T1_pp.nii'))
+
+
+with open(join(subject.intermediate_path, "coreg_return_batch.m"), "w") as f1:
+    f1.write(' ref=\'' + subject.T1_pp_gunzip_path_copy + '\' ; \n ')
+    f1.write(' source=\'' + subject.T1_pp_gunzip_path + '\' ; \n ')
+    f1.write(' tissue=\'' + subject.GM_path + '\' \n ' + '\''+subject.WM_path + '\' \n' + '\''+subject.CSF_path + '\' \n ;' )
+    with open(join(os.path.dirname(os.path.realpath(__file__)), "coreg_return.m")) as f:
+        for line in f:
+            f1.write(line)
+
+if platform.system() == 'Windows':
+
+    os.system(join(args.spm_path) + ' batch ' + join(subject.intermediate_path, "coreg_return_batch.m"))
+
+else:
+    if args.mcr_path == None:
+        print ' Matlab runtime compiler path is needed to run in Linux/MacOS systems'
+    os.system(args.spm_path + ' ' + args.mcr_path + ' batch ' + join(subject.intermediate_path, "coreg_return_batch.m"))
+
+
 
 
 subject=lsf.intensity_correction(subject)
