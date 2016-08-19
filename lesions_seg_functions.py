@@ -1287,8 +1287,14 @@ def lesion_growing(subject,theta,beta_grow,flag=0):
     lesiones_prob,lesiones_header_prob = load(subject.lesion_prob_path)
 
     mask_threshold=gray_matter_threshold(flair,(pv1>pv2)*(pv1>pv0))
+    n_les = 0
+    theta_it = theta
+    while n_les < 20 :
 
-    lesiones_clas = (lesiones_prob > theta)*mask_threshold*mask
+        lesiones_clas = (lesiones_prob > theta_it)*mask_threshold*mask
+        n_les=np.sum(lesiones_clas)
+        theta_it = theta_it-0.01
+
     lesiones_clas=filter.binary.size_threshold(lesiones_clas,10, comp='lt', structure=None)
 
     pv0_corrected = (pv0>pv1) * (pv0>pv2) * (lesiones_clas==0)*mask
@@ -1300,6 +1306,7 @@ def lesion_growing(subject,theta,beta_grow,flag=0):
     GM = medpy.features.intensities(flair,pv1_corrected)
     WM = medpy.features.intensities(flair,pv2_corrected)
     les = medpy.features.intensities(flair,lesiones_clas)
+
 
     brain_data = np.concatenate((csf,GM,WM))
 
@@ -1313,8 +1320,8 @@ def lesion_growing(subject,theta,beta_grow,flag=0):
 
     gaussMixture.fit(gmm_data)
 
-    if len(les)>10:
-        alpha, loc, beta=stats.gamma.fit(les)
+
+    alpha, loc, beta=stats.gamma.fit(les)
 
 
     struct2 = ndimage.generate_binary_structure(3, 1)
@@ -1379,7 +1386,6 @@ def lesion_growing(subject,theta,beta_grow,flag=0):
         subject.lesion_mask_final = 1
         subject.lesion_mask_final_path = join(subject.dir, 'results','lesion_mask.nii.gz')
         print 'Lesion mask generated  '
-
 
     return subject
 
