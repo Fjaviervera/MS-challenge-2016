@@ -191,6 +191,37 @@ def create_brain_mask(subject):
         save(mask_brain, join(subject.intermediate_path,'brain_mask.nii.gz'), t1_header)
     subject.add_brain_mask(join(subject.intermediate_path, 'brain_mask.nii.gz'))
     return subject
+def retrain_intensity(image,seq_type):
+
+    path = 'train_int'
+    subdirectories = os.listdir(path)
+    folders = []
+    for dir in subdirectories:
+        if isdir(join(path, dir)):
+            folders.append(dir)
+    images=[]
+    if seq_type == 1:
+        seq = 'T1_preprocessed.nii.gz'
+    if seq_type == 2:
+        seq = 'T2_preprocessed.nii.gz'
+    if seq_type == 3:
+        seq = 'FLAIR_preprocessed.nii.gz'
+    if seq_type == 4:
+        seq = 'DP_preprocessed.nii.gz'
+    if seq_type == 5:
+        seq = 'GADO_preprocessed.nii.gz'
+    for subject in folders:
+        im, im_header = medpy.io.load(join(path, subject, seq))
+        mask, mask_header = medpy.io.load(join(path, subject, 'Mask_registered.nii.gz'))
+
+        images.append(im[mask > 0])
+
+    images.append(image)
+    irs = medpy.filter.IntensityRangeStandardization()
+
+    trained_model, transformed_images = irs.train_transform(images)
+
+    return transformed_images[15]
 
 def intensity_correction(subject):
 
@@ -210,7 +241,11 @@ def intensity_correction(subject):
 
             vol_indices = indices(vol, spacing_indices, mask)
 
-            intensities_corrected = irs.transform(vol[mask > 0])
+            try:
+                intensities_corrected = irs.transform(vol[mask > 0])
+            except:
+                intensities_corrected= retrain_intensity(vol[mask > 0], 1)
+
 
             vol_irs = np.zeros(vol.shape)
 
@@ -234,7 +269,10 @@ def intensity_correction(subject):
 
             vol_indices = indices(vol, spacing_indices, mask)
 
-            intensities_corrected = irs.transform(vol[mask > 0])
+            try:
+                intensities_corrected = irs.transform(vol[mask > 0])
+            except:
+                intensities_corrected = retrain_intensity(vol[mask > 0], 2)
 
             vol_irs = np.zeros(vol.shape)
 
@@ -258,7 +296,10 @@ def intensity_correction(subject):
 
             vol_indices = indices(vol, spacing_indices, mask)
 
-            intensities_corrected = irs.transform(vol[mask > 0])
+            try:
+                intensities_corrected = irs.transform(vol[mask > 0])
+            except:
+                intensities_corrected = retrain_intensity(vol[mask > 0], 3)
 
             vol_irs = np.zeros(vol.shape)
 
@@ -282,7 +323,10 @@ def intensity_correction(subject):
 
             vol_indices = indices(vol, spacing_indices, mask)
 
-            intensities_corrected = irs.transform(vol[mask > 0])
+            try:
+                intensities_corrected = irs.transform(vol[mask > 0])
+            except:
+                intensities_corrected = retrain_intensity(vol[mask > 0], 4)
 
             vol_irs = np.zeros(vol.shape)
 
@@ -306,7 +350,10 @@ def intensity_correction(subject):
 
             vol_indices = indices(vol, spacing_indices, mask)
 
-            intensities_corrected = irs.transform(vol[mask > 0])
+            try:
+                intensities_corrected = irs.transform(vol[mask > 0])
+            except:
+                intensities_corrected = retrain_intensity(vol[mask > 0], 5)
 
             vol_irs = np.zeros(vol.shape)
 
@@ -1266,8 +1313,8 @@ def lesion_growing(subject,theta,beta_grow,flag=0):
 
     gaussMixture.fit(gmm_data)
 
-
-    alpha, loc, beta=stats.gamma.fit(les)
+    if len(les)>10:
+        alpha, loc, beta=stats.gamma.fit(les)
 
 
     struct2 = ndimage.generate_binary_structure(3, 1)
