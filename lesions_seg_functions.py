@@ -193,7 +193,7 @@ def create_brain_mask(subject):
     return subject
 def retrain_intensity(image,seq_type):
 
-    path = 'train_int'
+    path = join(os.path.dirname(os.path.realpath(__file__)),'train_int')
     subdirectories = os.listdir(path)
     folders = []
     for dir in subdirectories:
@@ -232,9 +232,10 @@ def intensity_correction(subject):
 
         if subject.T1 == 1:
 
-            with open(join(os.path.dirname(os.path.realpath(__file__)),'models/model_T1.pkl'), 'r') as f:
-                irs = pickle.load(f)
-
+            print 'empezando conversion t1'
+            with open(join(os.path.dirname(os.path.realpath(__file__)),'models/T1_test.pkl'), 'r') as f:
+				irs = pickle.load(f)
+				
             vol, header = load(subject.T1_pp_path)
             mask, mask_header = load(subject.brain_mask_path)
             spacing_indices = (1, 1, 1)
@@ -1289,74 +1290,80 @@ def lesion_growing(subject,theta,beta_grow,flag=0):
     mask_threshold=gray_matter_threshold(flair,(pv1>pv2)*(pv1>pv0))
     n_les = 0
     theta_it = theta
-    while n_les < 20 :
+    sane_brain = 0
+    while n_les < 20 and sane_brain == 0:
 
         lesiones_clas = (lesiones_prob > theta_it)*mask_threshold*mask
         n_les=np.sum(lesiones_clas)
         theta_it = theta_it-0.01
+        if theta_it < 0.15:
+            sane_brain = 1
 
-    lesiones_clas=filter.binary.size_threshold(lesiones_clas,10, comp='lt', structure=None)
+    if sane_brain == 0:
+        lesiones_clas=filter.binary.size_threshold(lesiones_clas,10, comp='lt', structure=None)
 
-    pv0_corrected = (pv0>pv1) * (pv0>pv2) * (lesiones_clas==0)*mask
-    pv1_corrected = (pv1>pv2) * (pv1>pv0) * (lesiones_clas==0)* mask
-    pv2_corrected = (pv2>pv1) * (pv2>pv0) * (lesiones_clas==0)*mask
-
-
-    csf = medpy.features.intensities(flair,pv0_corrected)
-    GM = medpy.features.intensities(flair,pv1_corrected)
-    WM = medpy.features.intensities(flair,pv2_corrected)
-    les = medpy.features.intensities(flair,lesiones_clas)
+        pv0_corrected = (pv0>pv1) * (pv0>pv2) * (lesiones_clas==0)*mask
+        pv1_corrected = (pv1>pv2) * (pv1>pv0) * (lesiones_clas==0)* mask
+        pv2_corrected = (pv2>pv1) * (pv2>pv0) * (lesiones_clas==0)*mask
 
 
-    brain_data = np.concatenate((csf,GM,WM))
+        csf = medpy.features.intensities(flair,pv0_corrected)
+        GM = medpy.features.intensities(flair,pv1_corrected)
+        WM = medpy.features.intensities(flair,pv2_corrected)
+        les = medpy.features.intensities(flair,lesiones_clas)
 
 
-
-    gaussMixture= mixture.GMM(n_components=3)
-    gaussMixture.means_ = np.asarray([[np.mean(csf)],[np.mean(GM)],[np.mean(WM)]])
-    gmm_data = np.array([brain_data]).transpose()
+        brain_data = np.concatenate((csf,GM,WM))
 
 
 
-    gaussMixture.fit(gmm_data)
-
-
-    alpha, loc, beta=stats.gamma.fit(les)
-
-
-    struct2 = ndimage.generate_binary_structure(3, 1)
-
-    grow_counter =100000000
-    while grow_counter >300:
-
-        spacing_indices=(1,1,1)
-
-        les_grow = binary_dilation(lesiones_clas,structure= struct2, iterations=1)
+        gaussMixture= mixture.GMM(n_components=3)
+        gaussMixture.means_ = np.asarray([[np.mean(csf)],[np.mean(GM)],[np.mean(WM)]])
+        gmm_data = np.array([brain_data]).transpose()
 
 
 
-        contador=0
-
-        indices=medpy.features.indices(flair,spacing_indices, les_grow*(lesiones_clas==0))
-        resultado=np.zeros(lesiones_clas.shape,dtype=float)
-        kernel = np.ones((3,3,3))/(3*3*3)
-
-        N_les=ndimage.filters.convolve(lesiones_prob,kernel)
-        posible_les=medpy.features.intensity.intensities( N_les,  les_grow*(lesiones_clas==0))
-
-        for pred_value in posible_les:
-
-            flair_valor = flair[indices[contador][0]][indices[contador][1]][indices[contador][2]]
-
-            resultado[indices[contador][0]][indices[contador][1]][indices[contador][2]]=(stats.gamma.pdf(flair_valor,alpha, loc=loc, scale=beta)*pred_value)/(np.exp(gaussMixture.score_samples(flair_valor)[0])*(1-pred_value))
-
-            contador=contador+1
-
-        lesiones_clas = (resultado>beta_grow) +lesiones_clas
-        grow_counter = np.sum(resultado>beta_grow)
+        gaussMixture.fit(gmm_data)
 
 
-    print('Grow done')
+        alpha, loc, beta=stats.gamma.fit(les)
+
+
+        struct2 = ndimage.generate_binary_structure(3, 1)
+
+        grow_counter =100000000
+        while grow_counter >300:
+
+            spacing_indices=(1,1,1)
+
+            les_grow = binary_dilation(lesiones_clas,structure= struct2, iterations=1)
+
+
+
+            contador=0
+
+            indices=medpy.features.indices(flair,spacing_indices, les_grow*(lesiones_clas==0))
+            resultado=np.zeros(lesiones_clas.shape,dtype=float)
+            kernel = np.ones((3,3,3))/(3*3*3)
+
+            N_les=ndimage.filters.convolve(lesiones_prob,kernel)
+            posible_les=medpy.features.intensity.intensities( N_les,  les_grow*(lesiones_clas==0))
+
+            for pred_value in posible_les:
+
+                flair_valor = flair[indices[contador][0]][indices[contador][1]][indices[contador][2]]
+
+                resultado[indices[contador][0]][indices[contador][1]][indices[contador][2]]=(stats.gamma.pdf(flair_valor,alpha, loc=loc, scale=beta)*pred_value)/(np.exp(gaussMixture.score_samples(flair_valor)[0])*(1-pred_value))
+
+                contador=contador+1
+
+            lesiones_clas = (resultado>beta_grow) +lesiones_clas
+            grow_counter = np.sum(resultado>beta_grow)
+
+
+        print('Grow done')
+
+
     if flag==0:
         if not exists(join(subject.dir, 'results_grow')):
             makedirs(join(subject.dir, 'results_grow'))
