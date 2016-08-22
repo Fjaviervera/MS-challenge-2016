@@ -232,8 +232,8 @@ def intensity_correction(subject):
 
         if subject.T1 == 1:
 
-            print 'empezando conversion t1'
-            with open(join(os.path.dirname(os.path.realpath(__file__)),'models/T1_test.pkl'), 'r') as f:
+
+            with open(join(os.path.dirname(os.path.realpath(__file__)),'models/model_T1.pkl'), 'r') as f:
 				irs = pickle.load(f)
 				
             vol, header = load(subject.T1_pp_path)
