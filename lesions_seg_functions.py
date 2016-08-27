@@ -1291,12 +1291,13 @@ def lesion_growing(subject,theta,beta_grow,flag=0):
     n_les = 0
     theta_it = theta
     sane_brain = 0
-    while n_les < 20 and sane_brain == 0:
+    while n_les < 200 and sane_brain == 0:
 
-        lesiones_clas = (lesiones_prob > theta_it)*mask_threshold*mask
+        lesiones_clas = (lesiones_prob > theta_it)*(mask_threshold==1)*(mask==1)
         n_les=np.sum(lesiones_clas)
+        print n_les
         theta_it = theta_it-0.01
-        if theta_it < 0.15:
+        if theta_it < 0.05:
             sane_brain = 1
 
     if sane_brain == 0:
@@ -1311,8 +1312,8 @@ def lesion_growing(subject,theta,beta_grow,flag=0):
         GM = medpy.features.intensities(flair,pv1_corrected)
         WM = medpy.features.intensities(flair,pv2_corrected)
         les = medpy.features.intensities(flair,lesiones_clas)
-
-
+        print 'les for fit'
+        print les
         brain_data = np.concatenate((csf,GM,WM))
 
 
