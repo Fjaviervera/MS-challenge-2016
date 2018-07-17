@@ -31,7 +31,7 @@ Also it is mandatory needed to have installed the Matlab Compiler Runtime(MCR) a
 To execute the program you need to parse the path of your SPM standalone isntallation and (only if you use a Linux or a MacOS systems) you have to parse the path to your MCR.
 
 Also you need the classifiers ,which are larges files, they are avalibles in this link:
-https://1drv.ms/u/s!AtQHOnUHXE11g4Bds-Rzvqe0kKqs4w
+[classifiers](https://urjc-my.sharepoint.com/:u:/g/personal/javier_vera_urjc_es/EaHMMuBhXuVCiAVfsNSXXlsBjbPQsQ2ySZUuIj-t1P8rgA?e=5wowCe)
 
 Once downloaded, move it to the root of the project and uncompress it(take in count it will take 10 Gb of space more or less). You should have in the root of the project a folder named classifiers.
 
